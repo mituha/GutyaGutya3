@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Help from "./Help";
 
+// --- Class Definition ---
 class RoundRange {
   Name: string;
   DisplayName: string;
@@ -14,11 +15,7 @@ class RoundRange {
     if (min === 0) {
       this.DisplayName = name;
     } else {
-      // For display, show a representative character if possible, or just the name.
-      // Avoid extremely long DisplayName if character range is huge or non-standard.
-      const exampleChars = [min, Math.min(min + 1, max), Math.min(min + 2, max)].filter(code => code <= 0xFFFF); // Limit to BMP for simple display
-      const exampleStr = exampleChars.length > 0 ? ` (${String.fromCharCode(...exampleChars)}...)` : "";
-      this.DisplayName = name;// + exampleStr; // Example string removed for cleaner UI based on user's current format
+      this.DisplayName = name;
     }
     this.Minimum = min;
     this.Maximum = max;
@@ -27,6 +24,7 @@ class RoundRange {
   }
 }
 
+// --- Constants and Derived Data ---
 const RoundRanges = [
   new RoundRange("選択しない", 0, 0),
   new RoundRange("ビルマ文字", 0x1000, 0x109F),
@@ -54,143 +52,140 @@ const RoundRangeOptions = RoundRanges.map((range) => {
   );
 });
 
-const Form = () => {
+// --- Helper Functions ---
+const isSeparator = (c: string): boolean => {
+  const pattern = /^([\s]|　)+?$/u;
+  if (c.match(pattern)) { return true; }
+  if ("\r\n,.、。・;:'\"\\".includes(c)) { return true; }
+  if ("|《》".includes(c)) { return true; }
+  if ("「」[]《》【】()（）『』〚〛".includes(c)) { return true; }
+  if ("―…?？!！".includes(c)) { return true; }
+  return false;
+};
+
+const isNumber = (c: string): boolean => {
+  if ("0123456789０１２３４５６７８９".includes(c)) { return true; }
+  return false;
+};
+
+const isSkipChar = (c: string): boolean => {
+  if (isSeparator(c)) { return true; }
+  if (isNumber(c)) { return true; }
+  const patternUnassigned = /^\p{C}$/u;
+  if (c.match(patternUnassigned)) { return true; }
+  return false;
+};
+
+const getNextChar = (c: string, inc: number, currentRoundRange: RoundRange): string => {
+  if (isSkipChar(c)) { return c; }
+  let charToProcess = c;
+  try {
+    let n = charToProcess.codePointAt(0)!;
+    n += inc;
+    if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
+      n = currentRoundRange.Minimum + ((n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
+    }
+    charToProcess = String.fromCodePoint(n);
+    if (isSkipChar(charToProcess) && c !== charToProcess) {
+       let temp_n = charToProcess.codePointAt(0)! + 1;
+       if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
+          temp_n = currentRoundRange.Minimum + ((temp_n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
+       }
+       charToProcess = String.fromCodePoint(temp_n);
+       if(isSkipChar(charToProcess)) return c;
+    }
+  } catch (e) {
+    console.error("Error in getNextChar:", e, "char:", c, "codePoint:", c.codePointAt(0));
+    return c;
+  }
+  return charToProcess;
+};
+
+const Split = (line: string): [string, boolean][] => {
+  let results: [string, boolean][] = [];
+  let stack: string[] = [];
+  for (const c of line.split("")) {
+    if (isSeparator(c)) {
+      if (stack.length > 0) {
+        results.push([stack.join(""), false]);
+        stack = [];
+      }
+      results.push([c, true]);
+    } else {
+      stack.push(c);
+    }
+  }
+  if (stack.length > 0) {
+    results.push([stack.join(""), false]);
+  }
+  return results;
+};
+
+const strReverse = (s: string): string => {
+  return Array.from(s).reverse().join("");
+};
+
+const strSwap = (s: string): string => {
+  let results: string[] = [];
+  let stack: string[] = [];
+  const chars = Array.from(s);
+  for (const c of chars) {
+    stack.push(c);
+    if (stack.length === 2) {
+      results.push(stack.pop()!);
+      results.push(stack.pop()!);
+    }
+  }
+  if (stack.length > 0) {
+    results.push(stack.pop()!);
+  }
+  return results.join("");
+};
+
+const Execute = (execLevel: number, line: string, currentRoundRange: RoundRange): string => {
+  let s = line;
+  if (execLevel === 1) {
+    s = strSwap(s);
+  } else if (execLevel === 2) {
+    s = Execute(1, strReverse(s), currentRoundRange);
+  } else {
+    const inc: number = (execLevel - 3) + line.length;
+    let conv: string[] = [];
+    for (const c of line.split("")) {
+      conv.push(getNextChar(c, inc, currentRoundRange));
+    }
+    s = Execute(2, conv.join(""), currentRoundRange);
+  }
+  return s;
+};
+
+const Convert = (text: string, currentLevel: number, currentRoundRange: RoundRange): string => {
+  let results: string[] = [];
+  for (const t of Split(text)) {
+    const [word, isSep] = t;
+    if (isSep) {
+      results.push(word);
+    } else {
+      results.push(Execute(currentLevel, word, currentRoundRange));
+    }
+  }
+  return results.join("");
+};
+
+// --- Form Component ---
+const Form: React.FC = () => {
   const [srcText, setSrcText] = useState("ここに入力");
   const [level, setLevel] = useState(5);
   const [roundRange, setRoundRange] = useState(RoundRanges[0]);
   const [dstText, setDstText] = useState("");
 
-  const isSeparator = (c: string): boolean => {
-    const pattern = /^([\s]|　)+?$/u;
-    if (c.match(pattern)) { return true; }
-    if ("\r\n,.、。・;:'\"\\".includes(c)) { return true; }
-    if ("|《》".includes(c)) { return true; }
-    if ("「」[]《》【】()（）『』〚〛".includes(c)) { return true; }
-    if ("―…?？!！".includes(c)) { return true; }
-    return false;
-  };
-
-  const isNumber = (c: string): boolean => {
-    if ("0123456789０１２３４５６７８９".includes(c)) { return true; }
-    return false;
-  };
-
-  const isSkipChar = (c: string): boolean => {
-    if (isSeparator(c)) { return true; }
-    if (isNumber(c)) { return true; }
-    const patternUnassigned = /^\p{C}$/u;
-    if (c.match(patternUnassigned)) { return true; }
-    return false;
-  };
-
-  const getNextChar = (c: string, inc: number, currentRoundRange: RoundRange): string => {
-    if (isSkipChar(c)) { return c; }
-    let charToProcess = c;
-    try {
-      let n = charToProcess.codePointAt(0)!;
-      n += inc;
-      if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
-        n = currentRoundRange.Minimum + ((n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
-      }
-      charToProcess = String.fromCodePoint(n);
-      // Ensure the newly generated char is not a skip char, if so, increment again (simple fix)
-      // This could be problematic if it lands in a long sequence of skip chars.
-      // A more robust solution might involve a limited number of retries or a predefined safe character.
-      if (isSkipChar(charToProcess) && c !== charToProcess) { // Check if original char was not a skip char
-         let temp_n = charToProcess.codePointAt(0)! + 1;
-         if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
-            temp_n = currentRoundRange.Minimum + ((temp_n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
-         }
-         charToProcess = String.fromCodePoint(temp_n);
-         if(isSkipChar(charToProcess)) return c; // If still a skip char, return original
-      }
-    } catch (e) {
-      console.error("Error in getNextChar:", e, "char:", c, "codePoint:", c.codePointAt(0));
-      return c; // Return original character in case of error
-    }
-    return charToProcess;
-  };
-
-  const Split = (line: string): [string, boolean][] => {
-    let results: [string, boolean][] = [];
-    let stack: string[] = [];
-    for (const c of line.split("")) {
-      if (isSeparator(c)) {
-        if (stack.length > 0) {
-          results.push([stack.join(""), false]);
-          stack = [];
-        }
-        results.push([c, true]);
-      } else {
-        stack.push(c);
-      }
-    }
-    if (stack.length > 0) {
-      results.push([stack.join(""), false]);
-    }
-    return results;
-  };
-
-  const Convert = (text: string, currentLevel: number, currentRoundRange: RoundRange): string => {
-    let results: string[] = [];
-    for (const t of Split(text)) {
-      const [word, isSep] = t;
-      if (isSep) {
-        results.push(word);
-      } else {
-        results.push(Execute(currentLevel, word, currentRoundRange));
-      }
-    }
-    return results.join("");
-  };
-
-  const Execute = (execLevel: number, line: string, currentRoundRange: RoundRange): string => {
-    let s = line;
-    if (execLevel === 1) {
-      s = strSwap(s);
-    } else if (execLevel === 2) {
-      s = Execute(1, strReverse(s), currentRoundRange);
-    } else {
-      const inc: number = (execLevel - 3) + line.length;
-      let conv: string[] = [];
-      for (const c of line.split("")) {
-        conv.push(getNextChar(c, inc, currentRoundRange));
-      }
-      s = Execute(2, conv.join(""), currentRoundRange);
-    }
-    return s;
-  };
-
   const handleConvert = (currentSrcText: string, currentLevel: number, currentRoundRange: RoundRange) => {
     setDstText(Convert(currentSrcText, currentLevel, currentRoundRange));
   };
   
-  // Initial conversion on mount and when parameters change
   useEffect(() => {
     handleConvert(srcText, level, roundRange);
   }, [srcText, level, roundRange]);
-
-
-  const strReverse = (s: string): string => {
-    return Array.from(s).reverse().join(""); // Use Array.from for proper Unicode character reversal
-  };
-
-  const strSwap = (s: string): string => {
-    let results: string[] = [];
-    let stack: string[] = [];
-    const chars = Array.from(s); // Use Array.from for proper Unicode character handling
-    for (const c of chars) {
-      stack.push(c);
-      if (stack.length === 2) {
-        results.push(stack.pop()!);
-        results.push(stack.pop()!);
-      }
-    }
-    if (stack.length > 0) {
-      results.push(stack.pop()!);
-    }
-    return results.join("");
-  };
 
   const handleSrcTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSrcText(e.target.value);
