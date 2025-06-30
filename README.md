@@ -1,14 +1,28 @@
-# Run and deploy your AI Studio app
+ぐちゃぐちゃあっぷ３ / GutyaGutya3
+=========================
 
-This contains everything you need to run your app locally.
+https://kakuyomu.jp/works/16817330667441159808
 
-## Run Locally
+用に作ったプログラムを近い形でWEB上で実行できるようにしたものです。
+また、特定の文字の範囲での出力を加えて、それっぽい適当な文字列の出力をできるようにしました。
 
-**Prerequisites:**  Node.js
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+
+
+
+
+
+
+
+## 経緯
+
+元々はC#で作成していました。
+これは、https://kakuyomu.jp/works/16817330667441159808 用に作成したもので、テキストファイルを変換するものでした。
+
+暫定的に他の人でも使用可能なようにWEBで実行可能なWEBアプリとして、
+https://mituha.github.io/gutyagutya-app/
+で公開したものが前のバージョンとなります。
+
+このアプリを Google AI Studio でデザインを調整して別プロジェクトとしたものとなります。
+
