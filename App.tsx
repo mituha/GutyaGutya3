@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Form from './components/Form';
 
@@ -23,11 +22,6 @@ const App: React.FC = () => {
             入力したテキストをいい感じにぐちゃぐちゃにします。
           </p>
           <Form />
-          <div className="mt-8 sm:mt-10 flex justify-center">
-            <svg className="w-16 h-16 sm:w-20 sm:h-20 text-sky-400/70 animate-pulse" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-            </svg>
-          </div>
         </div>
       </main>
       <footer role="contentinfo" className="mt-8 sm:mt-12 text-center text-slate-500 text-xs sm:text-sm">

@@ -1,5 +1,6 @@
 {
   "name": "GutyaGutya3",
   "description": "A foundational React application structure. This is an initial setup with no specific features implemented yet.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "prompt": ""
 }
