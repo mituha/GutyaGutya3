@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from 'vitest';
-import { Convert, RoundRange, strSwap, strReverse } from './core';
+import { Convert, RoundRange, strSwap, strReverse, Execute } from './core';
 
 describe('Convert', () => {
   const noRound = new RoundRange("選択しない", 0, 0);
@@ -88,5 +88,34 @@ describe('strSwap', () => {
     const surrogatePair = '𠮷野家'; // "𠮷" is a surrogate pair
     const swapped = '野𠮷家';
     expect(strSwap(surrogatePair)).toBe(swapped);
+  });
+});
+
+describe('Execute', () => {
+  const noRound = new RoundRange("選択しない", 0, 0);
+
+  it('should call strSwap for level 1', () => {
+    const result = Execute(1, 'ABC', noRound);
+    expect(result).toBe(strSwap('ABC'));
+  });
+
+  it('should call strReverse and then strSwap for level 2', () => {
+    const result = Execute(2, 'ABC', noRound);
+    expect(result).toBe(strSwap(strReverse('ABC')));
+  });
+
+  it('should perform character conversion for level 3 and above', () => {
+    const result = Execute(3, 'A', noRound);
+    // This will call getNextChar, which should change the character.
+    // The exact result depends on the implementation of getNextChar.
+    // We expect it to not be 'A' after reverse and swap.
+    const reversedAndSwappedA = strSwap(strReverse('A')); // which is 'A'
+    expect(result).not.toBe(reversedAndSwappedA);
+  });
+
+  it('should handle different increments for level 3+', () => {
+    const result3 = Execute(3, 'A', noRound);
+    const result4 = Execute(4, 'A', noRound);
+    expect(result3).not.toBe(result4);
   });
 });
