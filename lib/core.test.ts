@@ -62,3 +62,31 @@ describe('strReverse', () => {
     expect(strReverse(surrogatePair)).toBe(reversed);
   });
 });
+
+describe('strSwap', () => {
+  it('should swap characters in a string with even length', () => {
+    expect(strSwap('ABCD')).toBe('BADC');
+  });
+
+  it('should swap characters in a string with odd length', () => {
+    expect(strSwap('ABCDE')).toBe('BADCE');
+  });
+
+  it('should return an empty string if given an empty string', () => {
+    expect(strSwap('')).toBe('');
+  });
+
+  it('should handle strings with spaces by treating them as swappable characters', () => {
+    expect(strSwap('A B C D')).toBe(' A B CD');
+  });
+
+  it('should handle unicode characters correctly', () => {
+    expect(strSwap('あいうえお')).toBe('いあえうお');
+  });
+
+  it('should handle surrogate pairs correctly', () => {
+    const surrogatePair = '𠮷野家'; // "𠮷" is a surrogate pair
+    const swapped = '野𠮷家';
+    expect(strSwap(surrogatePair)).toBe(swapped);
+  });
+});
