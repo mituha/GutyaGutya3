@@ -34,3 +34,31 @@ describe('Convert', () => {
     expect(result).toBe(strSwap(strReverse('123')));
   });
 });
+
+describe('strReverse', () => {
+  it('should reverse a simple string', () => {
+    expect(strReverse('hello')).toBe('olleh');
+  });
+
+  it('should return an empty string if given an empty string', () => {
+    expect(strReverse('')).toBe('');
+  });
+
+  it('should handle strings with spaces', () => {
+    expect(strReverse('hello world')).toBe('dlrow olleh');
+  });
+
+  it('should handle strings with special characters', () => {
+    expect(strReverse('!@#$%^&*()')).toBe(')(*&^%$#@!');
+  });
+
+  it('should handle unicode characters correctly', () => {
+    expect(strReverse('こんにちは')).toBe('はちにんこ');
+  });
+
+  it('should handle surrogate pairs correctly', () => {
+    const surrogatePair = '𠮷野家'; // "𠮷" is a surrogate pair
+    const reversed = '家野𠮷';
+    expect(strReverse(surrogatePair)).toBe(reversed);
+  });
+});
