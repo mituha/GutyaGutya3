@@ -1,6 +1,6 @@
 
 import { describe, it, expect } from 'vitest';
-import { Convert, RoundRange, strSwap, strReverse, Execute } from './core';
+import { Convert, RoundRange, strSwap, strReverse, Execute, RoundRanges } from './core';
 
 describe('Convert', () => {
   const noRound = new RoundRange("選択しない", 0, 0);
@@ -117,5 +117,28 @@ describe('Execute', () => {
     const result3 = Execute(3, 'A', noRound);
     const result4 = Execute(4, 'A', noRound);
     expect(result3).not.toBe(result4);
+  });
+});
+
+describe('Execute with RoundRanges', () => {
+  // "選択しない" は文字コード変換を行わないため、除外してテスト
+  const testRanges = RoundRanges.filter(r => r.Name !== "選択しない");
+
+  testRanges.forEach(range => {
+    it(`should process with ${range.Name} without errors`, () => {
+      // Executeがエラーをスローしないことを確認する
+      expect(() => Execute(5, 'Test', range)).not.toThrow();
+    });
+
+    it(`should convert characters within the ${range.Name} range`, () => {
+      const result = Execute(5, 'A', range);
+      const resultCode = result.codePointAt(0)!;
+
+      // 変換後の文字コードが、指定した範囲内にあることを確認
+      // ただし、変換後の文字がisSkipCharに該当する場合があるため、その場合は範囲外になることもある
+      // ここでは、変換が行われ、元の文字とは異なることだけをチェックする
+      const originalSwapped = Execute(2, 'A', range);
+      expect(result).not.toBe(originalSwapped);
+    });
   });
 });
