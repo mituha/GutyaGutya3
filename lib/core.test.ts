@@ -142,3 +142,39 @@ describe('Execute with RoundRanges', () => {
     });
   });
 });
+
+describe('Pattern-based conversion tests', () => {
+  // テストデータを定義: [input, expected, level, rangeName]
+  const testCases: [string, string, number, string][] = [
+    ['ABC', 'BAC', 1, '選択しない'],
+    ['ABC', 'BCA', 2, '選択しない'],
+    ['Hello World', 'eHllo oWlrd', 1, '選択しない'],
+    ['Hello World', 'loelH ldorW', 2, '選択しない'],
+    // レベル3以上のテストは、変換後の文字が環境に依存するため、
+    // 具体的な期待値を設定するのが難しい。
+    // ここでは、変換されること、エラーが出ないことを確認する。
+    ['Test', 'Test', 5, 'ビルマ文字'], // 変換されるので'Test'ではないはず
+  ];
+
+  const testConversion = (input: string, expected: string, level: number, rangeName: string) => {
+    const range = RoundRanges.find(r => r.DisplayName === rangeName);
+    if (!range) {
+      throw new Error(`RoundRange "${rangeName}" not found.`);
+    }
+
+    const result = Convert(input, level, range);
+
+    if (level < 3) {
+      expect(result).toBe(expected);
+    } else {
+      // レベル3以上は変換されることを確認
+      expect(result).not.toBe(input);
+    }
+  };
+
+  testCases.forEach(([input, expected, level, rangeName]) => {
+    it(`should convert "${input}" to "${expected}" with level ${level} and range ${rangeName}`, () => {
+      testConversion(input, expected, level, rangeName);
+    });
+  });
+});
