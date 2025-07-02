@@ -38,7 +38,12 @@ export const RoundRanges = [
   new RoundRange("パスパ文字", 0xA840, 0xA87E),
   new RoundRange("ブラーフミー文字", 0x11000, 0x1107F),
   new RoundRange("ヴァイ文字", 0xA500, 0xA62B),
-  new RoundRange("デーヴァナーガリー", 0x0900, 0x097F)
+  new RoundRange("デーヴァナーガリー", 0x0900, 0x097F),
+  new RoundRange("オガム文字", 0x1680, 0x169F),
+  new RoundRange("タナ文字", 0x0780, 0x07BF),
+  new RoundRange("ンコ文字", 0x07C0, 0x07FF),
+  new RoundRange("西夏文字", 0x17000, 0x18AFF),
+  new RoundRange("楔形文字", 0x12000, 0x123FF)
 ];
 
 // --- Helper Functions ---
