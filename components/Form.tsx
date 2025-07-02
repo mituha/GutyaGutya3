@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Help from "./Help";
 import { RoundRange, RoundRanges, Convert } from "../lib/core";
 
@@ -44,6 +44,30 @@ const Form: React.FC = () => {
     handleConvert(srcText, level, roundRange);
   };
 
+  const characterPreview = useMemo(() => {
+    if (roundRange.Minimum === 0) return null;
+
+    const chars = [];
+    // パフォーマンスのため、最大500文字に制限
+    const maxChars = 500;
+    for (let i = roundRange.Minimum; i <= roundRange.Maximum && chars.length < maxChars; i++) {
+      try {
+        chars.push(String.fromCodePoint(i));
+      } catch (e) {
+        // 無効なコードポイントはスキップ
+      }
+    }
+    
+    return (
+      <div className="mt-2 p-3 bg-slate-800/50 border border-slate-700 rounded-lg">
+        <p className="text-sm text-slate-400 mb-2">{roundRange.Name} 文字プレビュー ({roundRange.Range > maxChars ? `${maxChars}文字のみ表示` : `${roundRange.Range}文字`})</p>
+        <div className="text-lg text-slate-200 break-words leading-relaxed" style={{ fontFamily: "'Noto Sans', sans-serif" }}>
+          {chars.join(" ")}
+        </div>
+      </div>
+    );
+  }, [roundRange]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,7 +101,7 @@ const Form: React.FC = () => {
           </select>
         </div>
 
-        <div>
+        <div className="md:col-span-2 lg:col-span-1">
           <label htmlFor="round-range-select" className="block text-sm font-medium text-slate-300 mb-1">
             文字種 (Lv.3+)
           </label>
@@ -100,6 +124,8 @@ const Form: React.FC = () => {
           変換実行
         </button>
       </div>
+      
+      {characterPreview}
 
       <div className="my-3 text-center text-slate-400 text-sm">
         現在の設定: Lv.{level} {roundRange.Name !== "選択しない" ? ` / ${roundRange.Name}` : ""}
