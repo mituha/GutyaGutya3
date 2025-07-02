@@ -153,7 +153,10 @@ describe('Pattern-based conversion tests', () => {
     // レベル3以上のテストは、変換後の文字が環境に依存するため、
     // 具体的な期待値を設定するのが難しい。
     // ここでは、変換されること、エラーが出ないことを確認する。
-    ['Test', 'Test', 5, 'ビルマ文字'], // 変換されるので'Test'ではないはず
+    ['とおうあなたがわたしのますたーか', 'ᚣᛥᚢᚨᚷᛇᚨᚠᛦᛘᚳᚨᛠᛜᚱᛤ', 5, 'ルーン文字'],
+    ['つめにひをともす', 'ᛃ᛫ᛓᚩᚬᚳᚥᛂ', 5, 'ルーン文字'],
+    ['つめにひをともす', 'ჶႣნႲႵႼႮჵ', 5, 'グルジア文字'],
+    ['らなおうこくけんこくし', 'ჼႤრႠჼჾჳႠႷჷზ', 5, 'グルジア文字'],
   ];
 
   const testConversion = (input: string, expected: string, level: number, rangeName: string) => {
@@ -164,12 +167,12 @@ describe('Pattern-based conversion tests', () => {
 
     const result = Convert(input, level, range);
 
-    if (level < 3) {
+//    if (level < 3) {
       expect(result).toBe(expected);
-    } else {
+//    } else {
       // レベル3以上は変換されることを確認
-      expect(result).not.toBe(input);
-    }
+//      expect(result).not.toBe(input);
+//    }
   };
 
   testCases.forEach(([input, expected, level, rangeName]) => {

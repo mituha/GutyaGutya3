@@ -66,23 +66,22 @@ export const isSkipChar = (c: string): boolean => {
 };
 
 export const getNextChar = (c: string, inc: number, currentRoundRange: RoundRange): string => {
+  //cは与える段階で１文字を想定しています
   if (isSkipChar(c)) { return c; }
   let charToProcess = c;
   try {
-    let n = charToProcess.codePointAt(0)!;
-    n += inc;
-    if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
-      n = currentRoundRange.Minimum + ((n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
-    }
-    charToProcess = String.fromCodePoint(n);
-    if (isSkipChar(charToProcess) && c !== charToProcess) {
-       let temp_n = charToProcess.codePointAt(0)! + 1;
-       if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
-          temp_n = currentRoundRange.Minimum + ((temp_n % currentRoundRange.Range) + currentRoundRange.Range) % currentRoundRange.Range;
-       }
-       charToProcess = String.fromCodePoint(temp_n);
-       if(isSkipChar(charToProcess)) return c;
-    }
+    do{
+      //最初の文字を取り出す
+      let n = charToProcess.codePointAt(0)!;
+      //文字コードをずらすことで暗号化
+      n += inc;
+      if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
+        //RoundRangeの範囲内に収めることで特殊な文字へと変換
+        n = currentRoundRange.Minimum + (n % currentRoundRange.Range);
+      }
+      //文字コードから文字を取得
+      charToProcess = String.fromCodePoint(n);
+    } while (isSkipChar(charToProcess) && charToProcess !== c);
   } catch (e) {
     console.error("Error in getNextChar:", e, "char:", c, "codePoint:", c.codePointAt(0));
     return c;
