@@ -65,7 +65,7 @@ export const isSkipChar = (c: string): boolean => {
   return false;
 };
 
-export const getNextChar = (c: string, inc: number, currentRoundRange: RoundRange): string => {
+export const getNextChar = (c: string, inc: number, currentRoundRange: RoundRange | null): string => {
   //cは与える段階で１文字を想定しています
   if (isSkipChar(c)) { return c; }
   let charToProcess = c;
@@ -75,7 +75,7 @@ export const getNextChar = (c: string, inc: number, currentRoundRange: RoundRang
       let n = charToProcess.codePointAt(0)!;
       //文字コードをずらすことで暗号化
       n += inc;
-      if (currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
+      if (currentRoundRange !== null && currentRoundRange.Minimum !== 0 && currentRoundRange.Range > 0) {
         //RoundRangeの範囲内に収めることで特殊な文字へと変換
         n = currentRoundRange.Minimum + (n % currentRoundRange.Range);
       }
@@ -130,7 +130,7 @@ export const strSwap = (s: string): string => {
   return results.join("");
 };
 
-export const Execute = (execLevel: number, line: string, currentRoundRange: RoundRange): string => {
+export const Execute = (execLevel: number, line: string, currentRoundRange: RoundRange | null): string => {
   let s = line;
   if (execLevel === 1) {
     s = strSwap(s);
@@ -138,13 +138,21 @@ export const Execute = (execLevel: number, line: string, currentRoundRange: Roun
     s = Execute(1, strReverse(s), currentRoundRange);
   } else {
     const inc: number = (execLevel - 3) + line.length;
-    let conv: string[] = [];
-    for (const c of line.split("")) {
-      conv.push(getNextChar(c, inc, currentRoundRange));
-    }
-    s = Execute(2, conv.join(""), currentRoundRange);
+    const rounded = RoundString(line, inc, currentRoundRange);
+    //RoundRangeは１度のみ適用
+    s = Execute(2, rounded, null);
   }
   return s;
+};
+export const RoundString = (line: string, inc: number, currentRoundRange: RoundRange | null): string => {
+  if (inc === 0 && (currentRoundRange === null || currentRoundRange.Minimum === 0)) {
+    return line; // 選択しない場合はそのまま返す
+  }
+  let conv: string[] = [];
+  for (const c of line.split("")) {
+      conv.push(getNextChar(c, inc, currentRoundRange));
+  }
+  return conv.join("");
 };
 
 export const Convert = (text: string, currentLevel: number, currentRoundRange: RoundRange): string => {
