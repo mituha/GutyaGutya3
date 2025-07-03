@@ -4,7 +4,7 @@ import { Convert, strSwap, strReverse, Execute } from './core';
 import { RoundRange } from './roundrange';
 
 describe('Convert', () => {
-  const noRound = new RoundRange("選択しない", 0, 0);
+  const noRound = new RoundRange("選択しない", 0, 0, true);
 
   it('レベル1: 文字がスワップされる', () => {
     const result = Convert('ABC', 1, noRound);
@@ -93,7 +93,7 @@ describe('strSwap', () => {
 });
 
 describe('Execute', () => {
-  const noRound = new RoundRange("選択しない", 0, 0);
+  const noRound = new RoundRange("選択しない", 0, 0, true);
 
   it('should call strSwap for level 1', () => {
     const result = Execute(1, 'ABC', noRound);

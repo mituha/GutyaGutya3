@@ -6,8 +6,9 @@ export class RoundRange {
   Maximum: number;
   Range: number;
   Key: string;
+  isSupported: boolean;
 
-  constructor(name: string, min: number, max: number) {
+  constructor(name: string, min: number, max: number, isSupported: boolean = true) {
     this.Name = name;
     if (min === 0) {
       this.DisplayName = name;
@@ -18,6 +19,7 @@ export class RoundRange {
     this.Maximum = max;
     this.Range = max - min + 1;
     this.Key = min.toString() + "-" + max.toString();
+    this.isSupported = isSupported;
   }
 
   // --- Constants and Derived Data ---
@@ -41,7 +43,8 @@ export class RoundRange {
     new RoundRange("オガム文字", 0x1680, 0x169F),
     new RoundRange("タナ文字", 0x0780, 0x07BF),
     new RoundRange("ンコ文字", 0x07C0, 0x07FF),
-    new RoundRange("西夏文字", 0x17000, 0x18AFF),
+    new RoundRange("西夏文字", 0x17000, 0x18AFF, false),
     new RoundRange("楔形文字", 0x12000, 0x123FF)
   ];
 }
+

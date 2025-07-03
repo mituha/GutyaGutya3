@@ -3,7 +3,7 @@ import Help from "./Help";
 import { RoundRange } from "../lib/roundrange";
 import { Convert } from "../lib/core";
 
-const RoundRangeOptions = RoundRange.ranges.map((range) => {
+const RoundRangeOptions = RoundRange.ranges.filter(range => range.isSupported).map((range) => {
   return (
     <option value={range.Name} key={range.Key}>
       {range.Name === "選択しない" ? range.Name : `${range.Name} : ${String.fromCodePoint(range.Minimum)} - ${String.fromCodePoint(range.Maximum)}`}
