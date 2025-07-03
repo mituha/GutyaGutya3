@@ -31,9 +31,9 @@ export class RoundRange {
     new RoundRange("ルーン文字+", 0x16A0, 0x16F8),
     new RoundRange("タイ文字", 0x0E01, 0x0E5B),
     new RoundRange("グルジア文字", 0x10A0, 0x10FF),
-    new RoundRange("シンハラ文字", 0x0D80, 0x0DF4),
+    new RoundRange("シンハラ文字", 0x0D82, 0x0DF4),
     new RoundRange("テルグ文字", 0x0C00, 0x0C7F),
-    new RoundRange("カンナダ文字", 0x0C80, 0x0CF3),
+    new RoundRange("カンナダ文字", 0x0C82, 0x0CF3),
     new RoundRange("マラヤーラム文字", 0x0D00, 0x0D7F),
     new RoundRange("ヒエログリフ", 0x13000, 0x1342F),
     new RoundRange("パスパ文字", 0xA840, 0xA87E),
@@ -61,7 +61,7 @@ export class RoundRange {
     new RoundRange("スンダ文字", 0x1B80, 0x1BBF),
     new RoundRange("モンゴル文字", 0x1800, 0x18AF),
     new RoundRange("チベット文字", 0x0F00, 0x0FFF),
-    new RoundRange("ハヌノオ文字", 0x1730, 0x173F),
+    new RoundRange("ハヌノオ文字", 0x1720, 0x1736),
     new RoundRange("ブヒッド文字", 0x1740, 0x175F),
     new RoundRange("タグバヌワ文字", 0x1760, 0x177F),
     new RoundRange("エチオピア文字", 0x1200, 0x137F),
@@ -83,14 +83,14 @@ export class RoundRange {
     new RoundRange("ラオ文字", 0x0E80, 0x0EFF),
     new RoundRange("彝文字", 0xA000, 0xA48F),
     new RoundRange("ハングル", 0xAC00, 0xD7AF),
-    new RoundRange("ひらがな", 0x3040, 0x309F),
-    new RoundRange("カタカナ", 0x30A0, 0x30FF),
+    new RoundRange("ひらがな", 0x3041, 0x309F),
+    new RoundRange("カタカナ", 0x30A1, 0x30FF),
     new RoundRange("CJK統合漢字", 0x4E00, 0x9FFF),
     new RoundRange("ラテン文字(基本)", 0x0020, 0x007F),
     new RoundRange("ラテン文字(拡張A)", 0x0080, 0x00FF),
     new RoundRange("ラテン文字(拡張B)", 0x0100, 0x017F),
     new RoundRange("キリル文字補助", 0x0500, 0x052F),
-    new RoundRange("ギリシア文字(拡張)", 0x1F00, 0x1FFF)
+    new RoundRange("ギリシア文字(拡張)", 0x1F00, 0x1FFC)
   ];
 }
 
