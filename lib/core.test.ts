@@ -1,6 +1,7 @@
 
 import { describe, it, expect } from 'vitest';
-import { Convert, RoundRange, strSwap, strReverse, Execute, RoundRanges } from './core';
+import { Convert, strSwap, strReverse, Execute } from './core';
+import { RoundRange, RoundRanges } from './roundrange';
 
 describe('Convert', () => {
   const noRound = new RoundRange("選択しない", 0, 0);

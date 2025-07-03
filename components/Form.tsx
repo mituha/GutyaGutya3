@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Help from "./Help";
-import { RoundRange, RoundRanges, Convert } from "../lib/core";
+import { RoundRange, RoundRanges } from "../lib/roundrange";
+import { Convert } from "../lib/core";
 
 const RoundRangeOptions = RoundRanges.map((range) => {
   return (
