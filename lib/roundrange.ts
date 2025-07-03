@@ -82,7 +82,15 @@ export class RoundRange {
     new RoundRange("クメール文字", 0x1780, 0x17FF),
     new RoundRange("ラオ文字", 0x0E80, 0x0EFF),
     new RoundRange("彝文字", 0xA000, 0xA48F),
-    new RoundRange("ハングル", 0xAC00, 0xD7AF)
+    new RoundRange("ハングル", 0xAC00, 0xD7AF),
+    new RoundRange("ひらがな", 0x3040, 0x309F),
+    new RoundRange("カタカナ", 0x30A0, 0x30FF),
+    new RoundRange("CJK統合漢字", 0x4E00, 0x9FFF),
+    new RoundRange("ラテン文字(基本)", 0x0020, 0x007F),
+    new RoundRange("ラテン文字(拡張A)", 0x0080, 0x00FF),
+    new RoundRange("ラテン文字(拡張B)", 0x0100, 0x017F),
+    new RoundRange("キリル文字補助", 0x0500, 0x052F),
+    new RoundRange("ギリシア文字(拡張)", 0x1F00, 0x1FFF)
   ];
 }
 
