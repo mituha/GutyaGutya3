@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { Convert, strSwap, strReverse, Execute } from './core';
-import { RoundRange, RoundRanges } from './roundrange';
+import { RoundRange } from './roundrange';
 
 describe('Convert', () => {
   const noRound = new RoundRange("選択しない", 0, 0);
@@ -121,9 +121,9 @@ describe('Execute', () => {
   });
 });
 
-describe('Execute with RoundRanges', () => {
+describe('Execute with RoundRange.ranges', () => {
   // "選択しない" は文字コード変換を行わないため、除外してテスト
-  const testRanges = RoundRanges.filter(r => r.Name !== "選択しない");
+  const testRanges = RoundRange.ranges.filter(r => r.Name !== "選択しない");
 
   testRanges.forEach(range => {
     it(`should process with ${range.Name} without errors`, () => {
@@ -161,7 +161,7 @@ describe('Pattern-based conversion tests', () => {
   ];
 
   const testConversion = (input: string, expected: string, level: number, rangeName: string) => {
-    const range = RoundRanges.find(r => r.DisplayName === rangeName);
+    const range = RoundRange.ranges.find(r => r.DisplayName === rangeName);
     if (!range) {
       throw new Error(`RoundRange "${rangeName}" not found.`);
     }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Help from "./Help";
-import { RoundRange, RoundRanges } from "../lib/roundrange";
+import { RoundRange } from "../lib/roundrange";
 import { Convert } from "../lib/core";
 
-const RoundRangeOptions = RoundRanges.map((range) => {
+const RoundRangeOptions = RoundRange.ranges.map((range) => {
   return (
     <option value={range.Name} key={range.Key}>
       {range.Name === "選択しない" ? range.Name : `${range.Name} : ${String.fromCodePoint(range.Minimum)} - ${String.fromCodePoint(range.Maximum)}`}
@@ -15,7 +15,7 @@ const RoundRangeOptions = RoundRanges.map((range) => {
 const Form: React.FC = () => {
   const [srcText, setSrcText] = useState("ここに入力");
   const [level, setLevel] = useState(5);
-  const [roundRange, setRoundRange] = useState(RoundRanges[0]);
+  const [roundRange, setRoundRange] = useState(RoundRange.ranges[0]);
   const [dstText, setDstText] = useState("");
 
   const handleConvert = (currentSrcText: string, currentLevel: number, currentRoundRange: RoundRange) => {
@@ -35,7 +35,7 @@ const Form: React.FC = () => {
   };
   
   const handleRoundRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRange = RoundRanges.find(range => range.Name === e.target.value);
+    const selectedRange = RoundRange.ranges.find(range => range.Name === e.target.value);
     if (selectedRange) {
       setRoundRange(selectedRange);
     }
